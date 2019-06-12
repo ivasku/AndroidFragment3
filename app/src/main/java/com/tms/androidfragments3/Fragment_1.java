@@ -1,8 +1,11 @@
 package com.tms.androidfragments3;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +37,10 @@ public class Fragment_1 extends Fragment {
     private EditText editText;
     private Button button;
 
+
+    private SharedViewModel viewModel;
+
+
     public Fragment_1() {
         // Required empty public constructor
     }
@@ -63,6 +70,9 @@ public class Fragment_1 extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
     }
 
     @Override
@@ -77,12 +87,24 @@ public class Fragment_1 extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                viewModel.setText(editText.getText());
             }
         });
 
 
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        viewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+        viewModel.getText().observe(getViewLifecycleOwner(), new Observer<CharSequence>() {
+            @Override
+            public void onChanged(@Nullable CharSequence charSequence) {
+                editText.setText(charSequence);
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
